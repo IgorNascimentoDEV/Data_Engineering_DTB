@@ -34,3 +34,44 @@ No databricks, uma tabela Delta é armazenada fisicamente como arquivos Parquet,
 
 -----------------------------------------------------------
 
+# 2. Arquitetura Interna de uma Delta Table
+
+uma Delta Table é composta por:
+
+-   Arquivos de dados (Parquet)
+-   Diretório especial chamado \_delta_log
+
+## 2.1 Arquivos Parquet
+
+Os dados são armazenados em formato colunar (.parquet).
+
+Exemplo de estrutura física:
+
+/mnt/dados/tabela/ part-0000.parquet part-0001.parquet \_delta_log/
+
+Cada operação pode gerar novos arquivos parquet.
+
+## 2.2 Transaction Log (\_delta_log)
+
+Dentro da pasta da tabela existe o diretório:
+
+\_delta_log/
+
+Ele contém arquivos como:
+
+000000.json 000001.json 000002.json 000003.checkpoint.parquet
+
+Cada arquivo JSON representa um commit.
+
+O log registra:
+
+-   Inserções
+-   Atualizações
+-   Deleções
+-   Alterações de schema
+-   Operações de restore
+
+Esse log perimete recontruir qualquer versção da tabela.
+
+-----------------------------------------------------------
+
